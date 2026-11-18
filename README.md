@@ -94,8 +94,8 @@ Background speech falls by about half; it doesn't go to zero. Fewer false end-of
 ## Quick start
 
 ```bash
-git clone https://github.com/kelsey-aai/voice-agent-twilio-universal-3-5-pro
-cd voice-agent-twilio-universal-3-5-pro
+git clone https://github.com/kelsey-aai/twilio-phone-agent-assemblyai
+cd twilio-phone-agent-assemblyai
 
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt   # includes assemblyai>=1.10.1
@@ -338,7 +338,7 @@ A phone agent is only as good as the numbers it hears. Transcription is the one 
 
 ## Resources
 
-- [Companion repo](https://github.com/kelsey-aai/voice-agent-twilio-universal-3-5-pro)
+- [Companion repo](https://github.com/kelsey-aai/twilio-phone-agent-assemblyai)
 - [Twilio Media Streams overview](https://www.twilio.com/docs/voice/media-streams)
 - [Twilio Media Streams WebSocket messages](https://www.twilio.com/docs/voice/media-streams/websocket-messages)
 
