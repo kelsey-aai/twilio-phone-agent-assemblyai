@@ -291,10 +291,13 @@ ASSEMBLYAI_WS_URL += "&voice_focus=near-field"
 
 ### Add keyterm prompting
 
-Bias the model toward your brand, product and plan names with up to 100 keyterms. Each keyterm is its own `keyterms_prompt` query parameter. You can also update the list mid-call with `UpdateConfiguration`:
+Bias the model toward your brand, product and plan names with up to 100 keyterms. Pass the list as one JSON-encoded `keyterms_prompt` query parameter. You can also update the list mid-call with `UpdateConfiguration`:
 
 ```python
-ASSEMBLYAI_WS_URL += "&keyterms_prompt=YourBrand&keyterms_prompt=SpecialTerm"
+import json
+from urllib.parse import urlencode
+
+ASSEMBLYAI_WS_URL += "&" + urlencode({"keyterms_prompt": json.dumps(["YourBrand", "SpecialTerm"])})
 ```
 
 ### Add post-call transcription
@@ -306,7 +309,7 @@ import assemblyai as aai
 
 aai.settings.api_key = "YOUR_ASSEMBLYAI_API_KEY"
 
-config = aai.TranscriptionConfig(speech_models=["universal-3-5-pro"])
+config = aai.TranscriptionConfig(speech_models=["assemblyai-stt-3-7"])
 transcript = aai.Transcriber(config=config).transcribe("https://example.com/recording.wav")
 print(transcript.text)
 ```
