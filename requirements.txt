@@ -1,6 +1,6 @@
 fastapi>=0.111
 uvicorn[standard]>=0.29
 websockets>=14.0
-assemblyai>=1.8.2
+assemblyai>=1.10.1
 openai>=1.30
 python-dotenv>=1.0

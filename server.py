@@ -1,10 +1,10 @@
 """
-Twilio phone call voice agent with AssemblyAI Universal-3.6 Pro Realtime.
+Twilio phone call voice agent with AssemblyAI AssemblyAI STT 3.7 Realtime Agent.
 
 Architecture:
   Caller ──► Twilio ──► (Media Streams WebSocket) ──► This server
                                                            │
-                                          AssemblyAI Universal-3.6 Pro Realtime (mulaw 8kHz)
+                                          AssemblyAI AssemblyAI STT 3.7 Realtime Agent (mulaw 8 kHz)
                                                            │ transcript
                                                       OpenAI GPT-4o
                                                            │ text
@@ -36,7 +36,7 @@ from openai import AsyncOpenAI
 
 load_dotenv()
 
-app = FastAPI(title="Twilio + AssemblyAI Universal-3.6 Pro Realtime Voice Agent")
+app = FastAPI(title="Twilio + AssemblyAI AssemblyAI STT 3.7 Realtime Agent Voice Agent")
 
 # ── Clients ──────────────────────────────────────────────────────────────────
 aai.settings.api_key = os.environ["ASSEMBLYAI_API_KEY"]
@@ -44,7 +44,7 @@ openai_client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # Twilio plays 8 kHz mu-law, so ask for exactly that: no transcoding on the way out
 TTS_CONFIG = aai.TTSConfig(
-    voice_id="49c443a4-8a1d-5f7e-b70b-98bdbd9823c3",  # Audrey
+    voice_id="aai-kyla",  # the default English voice; see assemblyai.com/docs/tts/voices
     language="english",
     encoding="pcm_mulaw",
     sample_rate=8000,
@@ -57,16 +57,16 @@ Speak naturally — no markdown, no lists. You are on a phone call.
 
 GREETING = "Hello! How can I help you today?"
 
-# Twilio streams audio as 8kHz mulaw — Universal-3.6 Pro Realtime accepts this
-# natively. The API key goes in the Authorization header (see media_stream);
-# the `token` query param is only for temporary streaming tokens.
+# Twilio streams audio as 8 kHz mu-law, and AssemblyAI STT 3.7 Realtime Agent
+# accepts that natively: encoding=pcm_mulaw, sample_rate=8000. The API key goes
+# in the Authorization header (see media_stream); the `token` query param is
+# only for temporary streaming tokens. Turn detection uses the `balanced` mode
+# defaults; see the README to tune it.
 ASSEMBLYAI_WS_URL = (
     "wss://streaming.assemblyai.com/v3/ws"
-    "?speech_model=universal-3-6-pro"
+    "?speech_model=assemblyai-stt-3-7-realtime-agent"
     "&encoding=pcm_mulaw"      # must match Twilio's audio format
-    "&sample_rate=8000"        # must match Twilio's 8kHz stream
-    "&min_turn_silence=400"    # phone audio: wait a beat longer before ending the turn
-    "&max_turn_silence=2000"   # hard ceiling so deliberate callers aren't cut off
+    "&sample_rate=8000"        # must match Twilio's 8 kHz stream
 )
 
 
@@ -89,7 +89,7 @@ async def incoming_call(request: Request):
 
 @app.websocket("/media-stream")
 async def media_stream(ws: WebSocket):
-    """Bridge: Twilio audio ──► AssemblyAI Universal-3.6 Pro Realtime ──► GPT-4o ──► AssemblyAI TTS ──► Twilio."""
+    """Bridge: Twilio audio ──► AssemblyAI AssemblyAI STT 3.7 Realtime Agent ──► GPT-4o ──► AssemblyAI TTS ──► Twilio."""
     await ws.accept()
 
     stream_sid: Optional[str] = None
